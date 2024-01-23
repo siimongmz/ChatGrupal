@@ -15,14 +15,19 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.22</version>
+    </dependency>
+    <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>21-ea+5</version>
+      <version>18-ea+5</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>21-ea+5</version>
+      <version>18-ea+5</version>
     </dependency>
             <dependency>
       <groupId>org.controlsfx</groupId>
@@ -40,7 +45,8 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>              </dependencies>
+    </dependency>
+  </dependencies>
 
   <build>
         <plugins>
@@ -49,8 +55,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <source>21</source>
-          <target>21</target>
+          <source>18</source>
+          <target>18</target>
         </configuration>
             </plugin>
       <plugin>
@@ -62,7 +68,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.chat.chatgrupal/com.chat.chatgrupal.HelloApplication</mainClass>
+              <mainClass>com.chat.chatgrupal/com.chat.chatgrupal.ChatApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
