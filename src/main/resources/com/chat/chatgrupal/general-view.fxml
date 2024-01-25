@@ -12,23 +12,16 @@
       fx:controller="com.chat.chatgrupal.ChatController">
     <HBox spacing="10" VBox.vgrow="ALWAYS" alignment="CENTER_RIGHT">
         <VBox VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml" alignment="CENTER_LEFT">
-            <TextArea minWidth="200" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
+            <TextArea fx:id="textAreaChat" editable="false" minWidth="200" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
         </VBox>
         <VBox  xmlns:fx="http://javafx.com/fxml" alignment="CENTER_RIGHT">
             <ListView fx:id="usuarios" VBox.vgrow="SOMETIMES" minWidth="100" prefWidth="100">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Usuario 1"/>
-                        <String fx:value="Usuario 2"/>
-                        <String fx:value="Usuario 3"/>
-                    </FXCollections>
-                </items>
             </ListView>
         </VBox>
     </HBox>
     <HBox xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER_LEFT">
-        <TextArea HBox.hgrow="SOMETIMES" style="-fx-font-size: 30;" minWidth="200" maxHeight="100"/>
-        <Button text="Enviar" minHeight="100" minWidth="100" prefHeight="100" prefWidth="100"/>
+        <TextArea fx:id="textAreaEnvio" HBox.hgrow="SOMETIMES" style="-fx-font-size: 30;" minWidth="200" maxHeight="100"/>
+        <Button text="Enviar" onMouseClicked="#enviarMensaje" minHeight="100" minWidth="100" prefHeight="100" prefWidth="100"/>
     </HBox>
 
     <padding>
