@@ -2,9 +2,6 @@ package com.chat.chatgrupal;
 
 import com.util.Mensaje;
 import com.util.Usuario;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -15,17 +12,20 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class ChatController {
-    @FXML
-    public ObservableList<String> nombres = FXCollections.observableArrayList();
+
     @FXML @Getter
     public TextArea textAreaChat;
     @FXML
     public TextArea textAreaEnvio;
-    @FXML
+    @FXML @Getter
     private ListView<String> usuarios;
 
     @FXML
     private TextField textoUsuario;
+
+    /**
+     * Metodo encargado de gestionar el inicio de sesion, enviara el nombre de usuario escrito al servidor y mostrará una alerta en caso de que no sea valido y continuará con la ejecucion asignando el nuevo usuario al cliente en caso de que si
+     */
     @FXML
     protected void comprobarInicioSesion(){
         Usuario usuario = new Usuario(textoUsuario.getText());
@@ -52,6 +52,10 @@ public class ChatController {
 
 
     }
+
+    /**
+     * Metodo encargado de enviar un mensaje al servidor para que este se encarge de gestionarlo, borrara el texto escrito en el TextArea de input y se ejecutará al presionar el boton de envio
+     */
     @FXML
     protected void enviarMensaje(){
         ObjectOutputStream salida = ChatApplication.getSalida();
@@ -65,6 +69,7 @@ public class ChatController {
             throw new RuntimeException(e);
         }
     }
+
 
 
 }

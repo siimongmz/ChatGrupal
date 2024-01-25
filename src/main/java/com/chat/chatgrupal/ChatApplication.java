@@ -3,9 +3,12 @@ import com.chat.hilos.GestionCliente;
 import com.util.Mensaje;
 import com.util.Usuario;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,9 +25,12 @@ import lombok.Setter;
 public class ChatApplication extends Application {
     @Getter @Setter
     private static Usuario usuario;
-    private static ArrayList<Mensaje> mensajes;
     private static GestionCliente gestionCliente;
-    public static Socket server;
+    private static ObservableList<String> usuarios = FXCollections.observableArrayList();
+    @Getter
+    private static Socket server;
+    @Getter
+    private static TextArea textoMensajes;
     @Getter
     private static ObjectInputStream entrada;
     @Getter
@@ -43,17 +49,18 @@ public class ChatApplication extends Application {
             stage.setTitle("ChatGrupal - @"+usuario.getNombreUsuario());
             stage.setScene(scene);
             stage.show();
+            //Cerrar hilo antes de terminar la ventana del cliente
             stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                 public void handle(WindowEvent we) {
-                    System.out.println("cerrando");
                     gestionCliente.terminarProceso();
-                    System.out.println(Thread.activeCount());
                 }
             });
+            textoMensajes = ((ChatController)fxmlLoader.getController()).getTextAreaChat();
+            ListView<String>  listView= ((ChatController)fxmlLoader.getController()).getUsuarios();
 
-            System.out.println("fin");
-            TextArea textoMensajes = ((ChatController)fxmlLoader.getController()).getTextAreaChat();
-            gestionCliente = new GestionCliente(textoMensajes);
+            listView.setItems(usuarios);
+            cargarMensajes();
+            gestionCliente = new GestionCliente(textoMensajes,usuarios);
             new Thread(gestionCliente).start();
 
         }
@@ -61,6 +68,9 @@ public class ChatApplication extends Application {
 
     }
 
+    /**
+     * Metodo encargado de crear la conexion con el socket del servidor
+     */
     public void conexionServidor(){
         try {
             server = new Socket("localhost",6000);
@@ -72,6 +82,11 @@ public class ChatApplication extends Application {
         }
 
     }
+
+    /**
+     * Metodo encargado de mostrar la ventana de inicio de sesión
+     * @throws IOException
+     */
     public void mostrarInicioSesion() throws IOException {
         Stage inicioSesion = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(ChatApplication.class.getResource("inicio-sesion-view.fxml"));
@@ -80,6 +95,21 @@ public class ChatApplication extends Application {
         inicioSesion.setTitle("Inicio de Sesion");
         inicioSesion.setScene(sceneInicioSesion);
         inicioSesion.showAndWait();
+    }
+
+    /**
+     * Metodo encargado de leer el historial de mensajes enviados por el servidor y de mostrarlo en el TextArea
+     */
+    private void cargarMensajes() {
+        ArrayList<Mensaje> mensajes = null;
+        try {
+            mensajes = (ArrayList<Mensaje>) entrada.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        for(Mensaje m : mensajes){
+            textoMensajes.appendText("\n"+m.getUsuario().getNombreUsuario()+": "+m.getContenido());
+        }
     }
 
     public static void main(String[] args) {
