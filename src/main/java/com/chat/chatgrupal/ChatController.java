@@ -4,6 +4,7 @@ import com.util.Mensaje;
 import com.util.Usuario;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 
@@ -14,7 +15,7 @@ import java.io.ObjectOutputStream;
 public class ChatController {
 
     @FXML @Getter
-    public TextArea textAreaChat;
+    public VBox vBoxChat;
     @FXML
     public TextArea textAreaEnvio;
     @FXML @Getter
