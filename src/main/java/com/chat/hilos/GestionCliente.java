@@ -2,9 +2,15 @@ package com.chat.hilos;
 
 import com.chat.chatgrupal.ChatApplication;
 import com.util.Mensaje;
+import com.util.Usuario;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,15 +18,17 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class GestionCliente implements Runnable{
-    public TextArea textAreaEnvio;
+    public VBox vBoxChat;
     private ObservableList<String> usuarios;
+    private Usuario usuario;
     ObjectOutputStream salida = ChatApplication.getSalida();
     ObjectInputStream entrada = ChatApplication.getEntrada();
     private final String CODIGO_FIN = "termino";
     private boolean funcionando = true;
-    public GestionCliente(TextArea textArea, ObservableList<String> usuarios){
-        this.textAreaEnvio = textArea;
+    public GestionCliente(VBox vBox, ObservableList<String> usuarios,Usuario usuario){
+        this.vBoxChat = vBox;
         this.usuarios = usuarios;
+        this.usuario = usuario;
     }
     @Override
     public void run() {
@@ -79,8 +87,34 @@ public class GestionCliente implements Runnable{
      * Agrega el mensaje recibido al TextArea del cliente para mostrarlo
      * @param mensaje el mensaje que se agregará
      */
-    private void recibirMensaje(Mensaje mensaje){
-        textAreaEnvio.appendText("\n"+mensaje.getUsuario().getNombreUsuario()+": "+mensaje.getContenido());
+    public void recibirMensaje(Mensaje mensaje){
+        //textAreaEnvio.appendText("\n"+mensaje.getUsuario().getNombreUsuario()+": "+mensaje.getContenido());
+        HBox contenedorMensaje = new HBox();
+        HBox.setHgrow(contenedorMensaje,Priority.ALWAYS);
+
+        Label labelMensaje = new Label();
+        if(mensaje.getUsuario().getNombreUsuario().equals(usuario.getNombreUsuario())){
+            contenedorMensaje.setAlignment(Pos.BOTTOM_RIGHT);
+            labelMensaje.setText(mensaje.getContenido());
+            labelMensaje.setStyle("-fx-background-color: #7ad17a;" +
+                    "-fx-background-radius: 20 20 0 20;" +
+                    "-fx-font-size: 20px;" +
+                    "-fx-padding: 10px;");
+        }else{
+            contenedorMensaje.setAlignment(Pos.BOTTOM_LEFT);
+            labelMensaje.setStyle("-fx-background-color: #c5c4c4;\n" +
+                    "-fx-background-radius: 20 20 20 0;"+
+                    "-fx-font-size: 20px;" +
+                    "-fx-padding: 10px;");
+            labelMensaje.setText(mensaje.getUsuario().getNombreUsuario()+": "+mensaje.getContenido());
+        }
+        HBox.setHgrow(labelMensaje,Priority.ALWAYS);
+        contenedorMensaje.getChildren().add(labelMensaje);
+        HBox.setHgrow(contenedorMensaje, Priority.ALWAYS);
+        Platform.runLater(()->{
+            vBoxChat.getChildren().add(contenedorMensaje);
+        });
+
     }
 
     /**

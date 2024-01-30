@@ -8,8 +8,11 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -30,7 +33,7 @@ public class ChatApplication extends Application {
     @Getter
     private static Socket server;
     @Getter
-    private static TextArea textoMensajes;
+    private static VBox vBoxChat;
     @Getter
     private static ObjectInputStream entrada;
     @Getter
@@ -55,12 +58,15 @@ public class ChatApplication extends Application {
                     gestionCliente.terminarProceso();
                 }
             });
-            textoMensajes = ((ChatController)fxmlLoader.getController()).getTextAreaChat();
+            vBoxChat = ((ChatController)fxmlLoader.getController()).getVBoxChat();
+            vBoxChat.setSpacing(3.5);
+            HBox.setHgrow(vBoxChat,Priority.ALWAYS);
+            vBoxChat.setFillWidth(true);
             ListView<String>  listView= ((ChatController)fxmlLoader.getController()).getUsuarios();
 
             listView.setItems(usuarios);
+            gestionCliente = new GestionCliente(vBoxChat,usuarios,usuario);
             cargarMensajes();
-            gestionCliente = new GestionCliente(textoMensajes,usuarios);
             new Thread(gestionCliente).start();
 
         }
@@ -108,7 +114,8 @@ public class ChatApplication extends Application {
             throw new RuntimeException(e);
         }
         for(Mensaje m : mensajes){
-            textoMensajes.appendText("\n"+m.getUsuario().getNombreUsuario()+": "+m.getContenido());
+            //textoMensajes.appendText("\n"+m.getUsuario().getNombreUsuario()+": "+m.getContenido());
+            gestionCliente.recibirMensaje(m);
         }
     }
 
