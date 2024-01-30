@@ -12,7 +12,6 @@ import java.util.List;
 
 public class Servidor {
     static final int PORT = 6000;
-
     private static final List<Usuario> usuarios = new ArrayList<>();
     private static final List<GestionServidor> clientesConectados = new ArrayList<>();
     @Getter
@@ -88,9 +87,9 @@ public class Servidor {
         try {
             ServerSocket servidor = new ServerSocket(PORT);
             while (funcionando) {
-                GestionServidor u = new GestionServidor(servidor.accept());
-                Thread nuevoHiloCLiente = new Thread(u);
-                clientesConectados.add(u);
+                GestionServidor gestionServidor = new GestionServidor(servidor.accept());
+                Thread nuevoHiloCLiente = new Thread(gestionServidor);
+                clientesConectados.add(gestionServidor);
                 nuevoHiloCLiente.start();
             }
 

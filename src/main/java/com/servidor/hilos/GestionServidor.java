@@ -49,6 +49,12 @@ public class GestionServidor implements Runnable {
 
 
         }
+        try {
+            salida.close();
+            entrada.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

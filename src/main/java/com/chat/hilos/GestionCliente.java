@@ -36,6 +36,8 @@ public class GestionCliente implements Runnable{
         }
         salida.writeObject(CODIGO_FIN);
         salida.flush();
+        salida.close();
+        entrada.close();
 
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
