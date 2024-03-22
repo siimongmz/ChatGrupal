@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.io.*;
 import java.net.Socket;
 
-public class GestionServidor implements Runnable {
+public class GestionServidorTCP implements Runnable {
     private final Socket socket;
     @Getter
     private Usuario usuario;
@@ -17,7 +17,7 @@ public class GestionServidor implements Runnable {
     private final ObjectOutputStream salida;
     private final String CODIGO_FIN = "termino";
 
-    public GestionServidor(Socket socket) {
+    public GestionServidorTCP(Socket socket) {
         this.socket = socket;
         try {
             this.salida = new ObjectOutputStream(socket.getOutputStream());
@@ -39,16 +39,14 @@ public class GestionServidor implements Runnable {
         //Se escucha la solicitud siempre y cuando haya bytes disponibles para leer
         while (funcionando) {
             try {
-                if (socket.getInputStream().available() > 0) {
-                    gestionarEntrada(entrada.readObject());
-                }
+
+                gestionarEntrada(entrada.readObject());
 
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-
-
         }
+
         try {
             salida.close();
             entrada.close();
