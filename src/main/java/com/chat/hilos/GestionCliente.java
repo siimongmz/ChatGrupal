@@ -7,7 +7,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -19,16 +19,19 @@ import java.util.ArrayList;
 
 public class GestionCliente implements Runnable{
     public VBox vBoxChat;
-    private ObservableList<String> usuarios;
+    public ScrollPane scrollMensajes;
+    private ObservableList<Usuario> usuarios;
     private Usuario usuario;
     ObjectOutputStream salida = ChatApplication.getSalida();
     ObjectInputStream entrada = ChatApplication.getEntrada();
     private final String CODIGO_FIN = "termino";
     private boolean funcionando = true;
-    public GestionCliente(VBox vBox, ObservableList<String> usuarios,Usuario usuario){
+    public GestionCliente(ScrollPane scrollMensajes,VBox vBox, ObservableList<Usuario> usuarios,Usuario usuario){
+        this.scrollMensajes = scrollMensajes;
         this.vBoxChat = vBox;
         this.usuarios = usuarios;
         this.usuario = usuario;
+        scrollMensajes.vvalueProperty().bind(vBoxChat.heightProperty());
     }
     @Override
     public void run() {
@@ -38,8 +41,6 @@ public class GestionCliente implements Runnable{
                 if(ChatApplication.getServer().getInputStream().available() > 0) {
                     gestionarEntrada(entrada.readObject());
                 }
-
-
 
         }
         salida.writeObject(CODIGO_FIN);
@@ -58,7 +59,7 @@ public class GestionCliente implements Runnable{
      */
     private void gestionarEntrada(Object object){
         if (object instanceof ArrayList<?>){
-            recibirListaUsuarios((ArrayList<String>)object);
+            recibirListaUsuarios((ArrayList<Usuario>)object);
         }else if(object instanceof Mensaje){
             recibirMensaje((Mensaje) object);
         }
@@ -68,7 +69,7 @@ public class GestionCliente implements Runnable{
      * Se encarga de renovar la lista de los usuarios conectados
      * @param usuariosRecibios la lista por la cual se remplaza el contenido la anterior
      */
-    private void recibirListaUsuarios(ArrayList<String> usuariosRecibios) {
+    private void recibirListaUsuarios(ArrayList<Usuario> usuariosRecibios) {
        /*
         *  El uso de Platform.runLater() para solucionar el error Not on FX application thread
         *  es una idea sacada de https://stackoverflow.com/questions/21083945
@@ -88,7 +89,7 @@ public class GestionCliente implements Runnable{
      * @param mensaje el mensaje que se agregará
      */
     public void recibirMensaje(Mensaje mensaje){
-        //textAreaEnvio.appendText("\n"+mensaje.getUsuario().getNombreUsuario()+": "+mensaje.getContenido());
+        //Creamos un espacio horizontal donde irá la burbuja del mesnaje
         HBox contenedorMensaje = new HBox();
         HBox.setHgrow(contenedorMensaje,Priority.ALWAYS);
 
@@ -114,7 +115,6 @@ public class GestionCliente implements Runnable{
         Platform.runLater(()->{
             vBoxChat.getChildren().add(contenedorMensaje);
         });
-
     }
 
     /**
