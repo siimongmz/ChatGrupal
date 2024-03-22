@@ -2,7 +2,7 @@ package com.servidor;
 
 import com.util.Mensaje;
 import com.util.Usuario;
-import com.servidor.hilos.GestionServidor;
+import com.servidor.hilos.GestionServidorTCP;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.List;
 public class Servidor {
     static final int PORT = 6000;
     private static final List<Usuario> usuarios = new ArrayList<>();
-    private static final List<GestionServidor> clientesConectados = new ArrayList<>();
+    private static final List<GestionServidorTCP> clientesConectados = new ArrayList<>();
     @Getter
     private static final ArrayList<Mensaje> mensjaes = new ArrayList<>();
     protected static boolean funcionando = true;
@@ -42,7 +42,7 @@ public class Servidor {
      */
     public static void addUser(Usuario user){
         usuarios.add(user);
-        for(GestionServidor h : clientesConectados){
+        for(GestionServidorTCP h : clientesConectados){
             h.enviarUsuarios();
         }
     }
@@ -53,7 +53,7 @@ public class Servidor {
      */
     public static void addMensaje(Mensaje mensaje){
         mensjaes.add(mensaje);
-        for(GestionServidor h : clientesConectados){
+        for(GestionServidorTCP h : clientesConectados){
             h.enviarMensaje(mensaje);
         }
 
@@ -63,22 +63,23 @@ public class Servidor {
      * Se encarga de transformar la lista de usuarios en una lista de los nombres de los usuarios
      * @return Un ArrayList con los nombres de los usuarios
      */
-    public static ArrayList<String> getUserList(){
-        ArrayList<String> resultado= new ArrayList<>();
-        for (Usuario u : usuarios){
-            resultado.add(u.getNombreUsuario());
-        }
-        return resultado;
+    public static ArrayList<Usuario> getUserList(){
+//        ArrayList<String> resultado= new ArrayList<>();
+//        for (Usuario u : usuarios){
+//            resultado.add(u.getNombreUsuario());
+//        }
+//        return resultado;
+        return new ArrayList<>(usuarios);
     }
 
     /**
      * Elimina un hilo gestor de los clientes y notifica al resto de clientes del cambio
-     * @param gestionServidor
+     * @param gestionServidorTCP
      */
-    public static void removeClienteConectado(GestionServidor gestionServidor) {
-        usuarios.remove(gestionServidor.getUsuario());
-        clientesConectados.remove(gestionServidor);
-        for(GestionServidor h : clientesConectados){
+    public static void removeClienteConectado(GestionServidorTCP gestionServidorTCP) {
+        usuarios.remove(gestionServidorTCP.getUsuario());
+        clientesConectados.remove(gestionServidorTCP);
+        for(GestionServidorTCP h : clientesConectados){
             h.enviarUsuarios();
         }
 
@@ -87,9 +88,9 @@ public class Servidor {
         try {
             ServerSocket servidor = new ServerSocket(PORT);
             while (funcionando) {
-                GestionServidor gestionServidor = new GestionServidor(servidor.accept());
-                Thread nuevoHiloCLiente = new Thread(gestionServidor);
-                clientesConectados.add(gestionServidor);
+                GestionServidorTCP gestionServidorTCP = new GestionServidorTCP(servidor.accept());
+                Thread nuevoHiloCLiente = new Thread(gestionServidorTCP);
+                clientesConectados.add(gestionServidorTCP);
                 nuevoHiloCLiente.start();
             }
 
