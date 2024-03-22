@@ -8,11 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -29,7 +27,7 @@ public class ChatApplication extends Application {
     @Getter @Setter
     private static Usuario usuario;
     private static GestionCliente gestionCliente;
-    private static ObservableList<String> usuarios = FXCollections.observableArrayList();
+    private static ObservableList<Usuario> usuarios = FXCollections.observableArrayList();
     @Getter
     private static Socket server;
     @Getter
@@ -47,7 +45,7 @@ public class ChatApplication extends Application {
         //mostrar ventana chat
         if (usuario != null) {
             FXMLLoader fxmlLoader = new FXMLLoader(ChatApplication.class.getResource("general-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 500, 800);
+            Scene scene = new Scene(fxmlLoader.load(), 600, 800);
 
             stage.setTitle("ChatGrupal - @"+usuario.getNombreUsuario());
             stage.setScene(scene);
@@ -59,13 +57,16 @@ public class ChatApplication extends Application {
                 }
             });
             vBoxChat = ((ChatController)fxmlLoader.getController()).getVBoxChat();
+            ScrollPane scrollMensajes = ((ChatController)fxmlLoader.getController()).getScrollMensajes();
             vBoxChat.setSpacing(3.5);
             HBox.setHgrow(vBoxChat,Priority.ALWAYS);
             vBoxChat.setFillWidth(true);
-            ListView<String>  listView= ((ChatController)fxmlLoader.getController()).getUsuarios();
+
+            ListView<Usuario>  listView= ((ChatController)fxmlLoader.getController()).getUsuarios();
+            listView.setCellFactory(new UserListFactory());
 
             listView.setItems(usuarios);
-            gestionCliente = new GestionCliente(vBoxChat,usuarios,usuario);
+            gestionCliente = new GestionCliente(scrollMensajes,vBoxChat,usuarios,usuario);
             cargarMensajes();
             new Thread(gestionCliente).start();
 
