@@ -5,22 +5,18 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
+
 <VBox alignment="BOTTOM_CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.chat.chatgrupal.ChatController">
     <HBox spacing="10" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" alignment="CENTER_RIGHT">
         <VBox spacing="5" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" xmlns:fx="http://javafx.com/fxml" alignment="CENTER_LEFT">
-            <ScrollPane VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" fitToWidth="true">
+            <ScrollPane fx:id="scrollMensajes" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" fitToWidth="true">
                 <VBox fx:id="vBoxChat" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS"/>
             </ScrollPane>
         </VBox>
         <VBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER_RIGHT">
-            <ListView fx:id="usuarios" VBox.vgrow="SOMETIMES" minWidth="100" prefWidth="100">
+            <ListView fx:id="usuarios" VBox.vgrow="SOMETIMES" minWidth="150" prefWidth="150">
             </ListView>
         </VBox>
     </HBox>
@@ -35,7 +31,6 @@
                 -fx-graphic: url(../iconos/enviar.svg);
                 -fx-shape: "M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z";
                 -fx-background-color: #3fbc3f;
-
             </style>
         </Button>
 
