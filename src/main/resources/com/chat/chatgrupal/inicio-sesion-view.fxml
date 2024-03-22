@@ -10,5 +10,7 @@
         <Label text="Introduce tu nombre de usuario"/>
         <TextField fx:id="textoUsuario" alignment="CENTER" HBox.hgrow="ALWAYS" prefHeight="30"></TextField>
         <Button text="Guardar" onMouseClicked="#comprobarInicioSesion"></Button>
+        <Button text="Seleccionar archivo" onAction="#openFilePicker" />
+        <Label fx:id="filePathLabel" text="Archivo seleccionado: " />
     </VBox>
 </HBox>
